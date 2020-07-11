@@ -1,0 +1,95 @@
+.App {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-auto-rows: 1fr;
+  grid-gap: 10px;
+  grid-template-areas:
+    "t1 t2 t3"
+    "t4 t5 t6";
+  height: 100vh;
+}
+
+.t1 {
+  grid-area: t1;
+}
+
+.t2 {
+  grid-area: t2;
+}
+
+.t3 {
+  grid-area: t3;
+}
+
+.t4 {
+  grid-area: t4;
+}
+
+.t5 {
+  grid-area: t5;
+}
+
+.t6 {
+  grid-area: t6;
+}
+
+.textbox {
+  display: flex;
+  flex-direction: column;
+  border-width: 1px;
+  border-style: solid;
+  min-height: 0;
+}
+
+.textbox > .send {
+  display: flex;
+  flex-direction: row;
+}
+
+.textbox > .text {
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
+  background-color: #f8f8f8;
+  padding: 2px;
+}
+
+.textbox > .send > .textarea {
+  flex: 1;
+  height: 80px;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
