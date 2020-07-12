@@ -157,12 +157,12 @@ func Run() {
 	ta := NewTestAgent()
 	ta.RunTest(1000)
 
-	time.Sleep(10 * time.Minute)
+	time.Sleep(1 * time.Minute)
 
 	fmt.Println("\n\n=============== DONE ===============")
 
 	fmt.Printf("\nTotal messages sent: %v", ta.totalMessagesSent)
 	fmt.Printf("\nTotal messages received: %v", ta.totalMessagesReceived)
-	fmt.Printf("\nMiss rate: %v%", (ta.totalMessagesReceived/ta.totalMessagesSent)*100)
-	fmt.Printf("\nAverage delay in msg receive: %vs", (float64(ta.totalDelayInReceived)/float64(ta.totalMessagesReceived))*100)
+	fmt.Printf("\nMiss rate: %e%", (ta.totalMessagesReceived/ta.totalMessagesSent)*100)
+	fmt.Printf("\nAverage delay in msg receive: %fs", (float64(ta.totalDelayInReceived)/float64(ta.totalMessagesReceived))*100)
 }

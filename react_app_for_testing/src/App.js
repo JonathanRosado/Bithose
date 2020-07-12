@@ -37,7 +37,7 @@ function TextWidget({t}) {
     }
 
     useEffect(() => {
-        ws.current = new WebSocket("ws://localhost:80")
+        ws.current = new WebSocket("ws://localhost:9483")
         ws.current.onclose = () => setMessages([...messages, "websocket closed"])
         ws.current.onopen = () => setMessages([...messages, "websocket open"])
         ws.current.onerror = err => setMessages([...messages, "there's been an error: " + err.toString()])

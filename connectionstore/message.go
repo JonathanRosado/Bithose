@@ -5,7 +5,7 @@ import "time"
 type Message struct {
 	LabelPairs []LabelPair `json:"label_pairs"`
 	Timestamp  time.Time   `json:"timestamp"`
-	Body       string      `json:"body"`
+	Body       interface{} `json:"body"`
 }
 
 type LabelPair struct {

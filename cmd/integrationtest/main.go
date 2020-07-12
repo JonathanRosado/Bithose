@@ -2,7 +2,7 @@ package main
 
 import (
 	"Bithose"
-	"Bithose/tests/stress"
+	"Bithose/cmd/integrationtest/stress"
 	"log"
 	"net/http"
 )
