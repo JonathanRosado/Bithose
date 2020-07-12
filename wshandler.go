@@ -92,12 +92,29 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 				continue
 			}
 
-			uuid, _ := connectionStore.AddConnection(&connectionstore.Connection{
+			uuid, err := connectionStore.AddConnection(&connectionstore.Connection{
 				Ch:                      ch,
 				LabelAcceptanceCriteria: incomingSubscribe.Criteria,
 			})
 
 			uuids = append(uuids, uuid)
+
+			// send confirmation
+			subscribeResponse := SubscribeResponse{
+				Uuid: uuid,
+			}
+			if err != nil {
+				subscribeResponse.Error = err.Error()
+			}
+			jsonResponse, err := json.Marshal(&subscribeResponse)
+			if err != nil {
+				log.Println(err)
+			}
+			err = conn.WriteMessage(websocket.TextMessage, jsonResponse)
+			if err != nil {
+				log.Println(err)
+			}
+
 		case "unsubscribe":
 		case "message":
 			incomingMessage := IncomingMessage{}
@@ -109,7 +126,25 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 				continue
 			}
 
-			connectionStore.SendMessage(incomingMessage.Message)
+			numOfSent, numOfTimeout, err := connectionStore.SendMessage(incomingMessage.Message)
+
+			// send confirmation
+			messageResponse := SendMessageResponse{
+				NumberOfSents:    numOfSent,
+				NumberOfTimeouts: numOfTimeout,
+				Error:            "",
+			}
+			if err != nil {
+				messageResponse.Error = err.Error()
+			}
+			jsonResponse, err := json.Marshal(&messageResponse)
+			if err != nil {
+				log.Println(err)
+			}
+			err = conn.WriteMessage(websocket.TextMessage, jsonResponse)
+			if err != nil {
+				log.Println(err)
+			}
 		default:
 			log.Println("unknown type")
 			continue
