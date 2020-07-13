@@ -1,4 +1,4 @@
-module Bithose
+module github.com/JonathanRosado/Bithose
 
 go 1.14
 
