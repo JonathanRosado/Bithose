@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Bithose"
-	"Bithose/cmd/integrationtest/stress"
+	"github.com/JonathanRosado/Bithose"
+	"github.com/JonathanRosado/Bithose/cmd/integrationtest/stress"
 	"log"
 	"net/http"
 )

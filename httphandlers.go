@@ -1,8 +1,8 @@
 package Bithose
 
 import (
-	"Bithose/connectionstore"
 	"encoding/json"
+	"github.com/JonathanRosado/Bithose/connectionstore"
 	"net/http"
 )
 

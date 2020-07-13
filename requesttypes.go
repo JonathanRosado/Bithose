@@ -1,7 +1,7 @@
 package Bithose
 
 import (
-	"Bithose/connectionstore"
+	"github.com/JonathanRosado/Bithose/connectionstore"
 )
 
 type IncomingSubscribeRequest struct {

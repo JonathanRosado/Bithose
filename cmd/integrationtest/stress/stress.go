@@ -1,9 +1,9 @@
 package stress
 
 import (
-	"Bithose/connectionstore"
 	"encoding/json"
 	"fmt"
+	"github.com/JonathanRosado/Bithose/connectionstore"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/url"

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"Bithose"
 	"flag"
+	"github.com/JonathanRosado/Bithose"
 	"log"
 	"net/http"
 )

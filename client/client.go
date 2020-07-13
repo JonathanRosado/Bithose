@@ -1,10 +1,10 @@
 package client
 
 import (
-	"Bithose"
-	"Bithose/connectionstore"
 	"encoding/json"
 	"errors"
+	"github.com/JonathanRosado/Bithose"
+	"github.com/JonathanRosado/Bithose/connectionstore"
 	"github.com/gorilla/websocket"
 	"net/url"
 )
