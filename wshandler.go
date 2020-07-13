@@ -3,10 +3,10 @@ package Bithose
 import (
 	"Bithose/connectionstore"
 	"encoding/json"
-	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -18,6 +18,29 @@ var Upgrader websocket.Upgrader = websocket.Upgrader{
 	},
 }
 
+type Websocket struct {
+	conn *websocket.Conn
+	mu   sync.Mutex
+}
+
+func NewWebsocket(w http.ResponseWriter, r *http.Request) (*Websocket, error) {
+	conn, err := Upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		return nil, err
+	}
+	return &Websocket{
+		conn: conn,
+		mu:   sync.Mutex{},
+	}, nil
+}
+
+func (w *Websocket) Send(message []byte) error {
+	w.mu.Lock()
+	defer w.mu.Unlock()
+	err := w.conn.WriteMessage(websocket.TextMessage, message)
+	return err
+}
+
 func WsHandler(writer http.ResponseWriter, request *http.Request) {
 	setCors(writer)
 
@@ -25,11 +48,10 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	conn, err := Upgrader.Upgrade(writer, request, nil)
+	ws, err := NewWebsocket(writer, request)
 	if err != nil {
 		log.Println(err)
-		writer.WriteHeader(http.StatusInternalServerError)
-		writer.Write([]byte(err.Error()))
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
@@ -50,7 +72,7 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 	go func() {
 		for {
 			message := <-ch
-			err := conn.WriteMessage(websocket.TextMessage, message)
+			err := ws.Send(message)
 			if err != nil {
 				log.Println("Error while writing")
 				log.Println(err)
@@ -62,12 +84,13 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 
 	for {
 		// read incoming payload
-		_, p, err := conn.ReadMessage()
+		messageType, p, err := ws.conn.ReadMessage()
+		// TODO: find a way to close. first value messageType may help
 		log.Println("read message")
 		if err != nil {
+			log.Println("messageType: ", messageType)
+			log.Println("p: ", p)
 			log.Println(err)
-			log.Println("closed on read")
-			removeConnections()
 			break
 		}
 
@@ -110,7 +133,7 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = conn.WriteMessage(websocket.TextMessage, jsonResponse)
+			err = ws.Send(jsonResponse)
 			if err != nil {
 				log.Println(err)
 			}
@@ -141,7 +164,7 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 			if err != nil {
 				log.Println(err)
 			}
-			err = conn.WriteMessage(websocket.TextMessage, jsonResponse)
+			err = ws.Send(jsonResponse)
 			if err != nil {
 				log.Println(err)
 			}
@@ -150,8 +173,6 @@ func WsHandler(writer http.ResponseWriter, request *http.Request) {
 			continue
 		}
 	}
-
-	fmt.Println("exiting websocket connection")
 }
 
 func setCors(writer http.ResponseWriter) {
